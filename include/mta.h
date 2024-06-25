@@ -31,10 +31,6 @@ namespace mta
             return std::chrono::duration_cast<ConvertibleDuration>(Clock::now() - init);
         }
 
-        // TODO: It is a good thing to delete the copy constructor and copy assignment?
-        Timer(const Timer &) = delete;
-        Timer operator=(const Timer &) = delete;
-
     private:
         std::chrono::time_point<Clock> init{};
     }; // class Timer
