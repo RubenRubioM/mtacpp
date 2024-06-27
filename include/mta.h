@@ -6,79 +6,137 @@
 
 namespace mta
 {
-    static constexpr uint64_t secondsRatio = 1;
-    static constexpr uint64_t minutesRatio = secondsRatio * 60;
-    static constexpr uint64_t hoursRatio = minutesRatio * 60;
-    static constexpr uint64_t daysRatio = hoursRatio * 24;
-    static constexpr uint64_t weeksRatio = daysRatio * 7;
-    static constexpr uint64_t monthsRatio = 2629746;
-    static constexpr uint64_t yearsRatio = 31556952;
+    using decimalType = double;
+    using integerType = int64_t;
 
-    using DecimalNanoseconds = std::chrono::duration<double, std::nano>;
-    using DecimalMicroseconds = std::chrono::duration<double, std::micro>;
-    using DecimalMilliseconds = std::chrono::duration<double, std::milli>;
-    using DecimalCentiseconds = std::chrono::duration<double, std::centi>;
-    using DecimalDeciseconds = std::chrono::duration<double, std::deci>;
-    using DecimalSeconds = std::chrono::duration<double, std::ratio<secondsRatio>>;
-    using DecimalMinutes = std::chrono::duration<double, std::ratio<minutesRatio>>;
-    using DecimalHours = std::chrono::duration<double, std::ratio<hoursRatio>>;
-    using DecimalDays = std::chrono::duration<double, std::ratio<daysRatio>>;
-    using DecimalWeeks = std::chrono::duration<double, std::ratio<weeksRatio>>;
-    using DecimalMonths = std::chrono::duration<double, std::ratio<monthsRatio>>;
-    using DecimalYears = std::chrono::duration<double, std::ratio<yearsRatio>>;
+    static constexpr integerType secondsRatio = 1LL;
+    /// How many seconds are in a minute.
+    static constexpr integerType minutesRatio = secondsRatio * 60LL;
+    /// How many seconds are in an hour.
+    static constexpr integerType hoursRatio = minutesRatio * 60LL;
+    /// How many seconds are in a day.
+    static constexpr integerType daysRatio = hoursRatio * 24LL;
+    /// How many seconds are in a week.
+    static constexpr integerType weeksRatio = daysRatio * 7LL;
+    /// How many seconds are in a month.
+    static constexpr integerType monthsRatio = 2629746LL;
+    /// How many seconds are in a year.
+    static constexpr integerType yearsRatio = 31556952LL;
 
-    using IntegerNanoseconds = std::chrono::duration<uint64_t, std::nano>;
-    using IntegerMicroseconds = std::chrono::duration<uint64_t, std::micro>;
-    using IntegerMilliseconds = std::chrono::duration<uint64_t, std::milli>;
-    using IntegerCentiseconds = std::chrono::duration<uint64_t, std::centi>;
-    using IntegerDeciseconds = std::chrono::duration<uint64_t, std::deci>;
-    using IntegerSeconds = std::chrono::duration<uint64_t, std::ratio<secondsRatio>>;
-    using IntegerMinutes = std::chrono::duration<uint64_t, std::ratio<minutesRatio>>;
-    using IntegerHours = std::chrono::duration<uint64_t, std::ratio<hoursRatio>>;
-    using IntegerDays = std::chrono::duration<uint64_t, std::ratio<daysRatio>>;
-    using IntegerWeeks = std::chrono::duration<uint64_t, std::ratio<weeksRatio>>;
-    using IntegerMonths = std::chrono::duration<uint64_t, std::ratio<monthsRatio>>;
-    using IntegerYears = std::chrono::duration<uint64_t, std::ratio<yearsRatio>>;
+    /// Floating point representation for `std::chrono::duration` in nanoseconds.
+    using DecimalNanoseconds = std::chrono::duration<decimalType, std::nano>;
+    /// Floating point representation for `std::chrono::duration` in microseconds.
+    using DecimalMicroseconds = std::chrono::duration<decimalType, std::micro>;
+    /// Floating point representation for `std::chrono::duration` in milliseconds.
+    using DecimalMilliseconds = std::chrono::duration<decimalType, std::milli>;
+    /// Floating point representation for `std::chrono::duration` in centiseconds.
+    using DecimalCentiseconds = std::chrono::duration<decimalType, std::centi>;
+    /// Floating point representation for `std::chrono::duration` in deciseconds.
+    using DecimalDeciseconds = std::chrono::duration<decimalType, std::deci>;
+    /// Floating point representation for `std::chrono::duration` in seconds.
+    using DecimalSeconds = std::chrono::duration<decimalType, std::ratio<secondsRatio>>;
+    /// Floating point representation for `std::chrono::duration` in minutes.
+    using DecimalMinutes = std::chrono::duration<decimalType, std::ratio<minutesRatio>>;
+    /// Floating point representation for `std::chrono::duration` in hours.
+    using DecimalHours = std::chrono::duration<decimalType, std::ratio<hoursRatio>>;
+    /// Floating point representation for `std::chrono::duration` in days.
+    using DecimalDays = std::chrono::duration<decimalType, std::ratio<daysRatio>>;
+    /// Floating point representation for `std::chrono::duration` in weeks.
+    using DecimalWeeks = std::chrono::duration<decimalType, std::ratio<weeksRatio>>;
+    /// Floating point representation for `std::chrono::duration` in months.
+    using DecimalMonths = std::chrono::duration<decimalType, std::ratio<monthsRatio>>;
+    /// Floating point representation for `std::chrono::duration` in years.
+    using DecimalYears = std::chrono::duration<decimalType, std::ratio<yearsRatio>>;
 
+    /// Integer representation for `std::chrono::duration` in nanoseconds.
+    using IntegerNanoseconds = std::chrono::duration<integerType, std::nano>;
+    /// Integer representation for `std::chrono::duration` in microseconds.
+    using IntegerMicroseconds = std::chrono::duration<integerType, std::micro>;
+    /// Integer representation for `std::chrono::duration` in milliseconds.
+    using IntegerMilliseconds = std::chrono::duration<integerType, std::milli>;
+    /// Integer representation for `std::chrono::duration` in centiseconds.
+    using IntegerCentiseconds = std::chrono::duration<integerType, std::centi>;
+    /// Integer representation for `std::chrono::duration` in deciseconds.
+    using IntegerDeciseconds = std::chrono::duration<integerType, std::deci>;
+    /// Integer representation for `std::chrono::duration` in seconds.
+    using IntegerSeconds = std::chrono::duration<integerType, std::ratio<secondsRatio>>;
+    /// Integer representation for `std::chrono::duration` in minutes.
+    using IntegerMinutes = std::chrono::duration<integerType, std::ratio<minutesRatio>>;
+    /// Integer representation for `std::chrono::duration` in hours.
+    using IntegerHours = std::chrono::duration<integerType, std::ratio<hoursRatio>>;
+    /// Integer representation for `std::chrono::duration` in days.
+    using IntegerDays = std::chrono::duration<integerType, std::ratio<daysRatio>>;
+    /// Integer representation for `std::chrono::duration` in weeks.
+    using IntegerWeeks = std::chrono::duration<integerType, std::ratio<weeksRatio>>;
+    /// Integer representation for `std::chrono::duration` in months.
+    using IntegerMonths = std::chrono::duration<integerType, std::ratio<monthsRatio>>;
+    /// Integer representation for `std::chrono::duration` in years.
+    using IntegerYears = std::chrono::duration<integerType, std::ratio<yearsRatio>>;
+
+    /// @brief Timer class definition used to calculate the time elapsed since the start of itself.
+    /// @tparam Clock - The type of clock used to calculate the time. Default value is `std::chrono::high_resolution_clock`.
     template <typename Clock = std::chrono::high_resolution_clock>
     class Timer
     {
     public:
 
+        /// @brief Default constructor.
         constexpr explicit Timer() noexcept = default;
+        
+        /// @brief Destructor
         ~Timer() noexcept = default;
 
+        /// @brief Starts the timer. Sets `Timer::init_` to `Clock::now()`
         void start() noexcept
         {
-            init = Clock::now();
+            init_ = Clock::now();
         }
 
-        /// @brief Returns the elapsed time since Timer::start was called
-        /// @tparam ConvertibleDuration std::chrono::duration to convert to this unit.
+        /// @brief Stops the timer. Sets Timer::finish_ to Clock::now()
+        /// @note If `Timer::stop` is called without calling `Timer::start` first, the time will be 0. 
+        void stop() noexcept
+        {
+            finish_ = Clock::now();
+            if (init_ == std::chrono::time_point<Clock>())
+                init_ = finish_;
+        }
+
+        /// @brief If the timer has been stopped
+        /// @return `true` if `Timer::stop` has been called before. 
+        /// @return `false` otherwise.
+        [[nodiscard]] constexpr bool isStopped() const
+        {
+            return finish_ != std::chrono::time_point<Clock>();
+        }
+
+        /// @brief Returns the elapsed time since `Timer::start` was called
+        /// @tparam ConvertibleDuration `std::chrono::duration` to convert to this unit.
         /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer. 
-        ///       You can also provide your own conversion directly from chrono, e.g: std::chrono::milliseconds.
+        ///       You can also provide your own conversion directly from chrono, e.g: `std::chrono::milliseconds`.
         ///       The default value is `mta::DecimalNanoseconds`, nanoseconds in floating point representation.
-        /// @return The value of T between Timer::start and now in the underlying type used in ConvertibleDuration.
+        /// @return The value of T between `Timer::start` and now in the underlying type used in `ConvertibleDuration`.
         template <typename ConvertibleDuration = DecimalNanoseconds>
         [[nodiscard]] ConvertibleDuration::rep elapsed() const noexcept
         {
             return elapsedAsDuration<ConvertibleDuration>().count();
         }
 
-        /// @brief Returns the elapsed time since Timer::start was called as an std::chrono::duration
-        /// @tparam ConvertibleDuration std::chrono::duration to convert to this unit.
+        /// @brief Returns the elapsed time since `Timer::start` was called as an `std::chrono::duration`
+        /// @tparam ConvertibleDuration `std::chrono::duration` to convert to this unit.
         /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer. 
-        ///       You can also provide your own conversion directly from chrono, e.g: std::chrono::milliseconds.
+        ///       You can also provide your own conversion directly from chrono, e.g: `std::chrono::milliseconds`.
         ///       The default value is `mta::DecimalNanoseconds`, nanoseconds in floating point representation.
-        /// @return The value of T between Timer::start and now.
+        /// @return The value of T between `Timer::start` and now.
         template <typename ConvertibleDuration = DecimalNanoseconds>
         [[nodiscard]] ConvertibleDuration elapsedAsDuration() const noexcept
         {
-            return std::chrono::duration_cast<ConvertibleDuration>(Clock::now() - init);
+            std::chrono::time_point finish = finish_ != std::chrono::time_point<Clock>() ? finish_ : Clock::now();
+            return std::chrono::duration_cast<ConvertibleDuration>(finish - init_);
         }
 
     private:
-        std::chrono::time_point<Clock> init{}; /// Initial time_point. Setted in Timer::start.
+        std::chrono::time_point<Clock> init_{};     /// Initial time_point. Setted in Timer::start.
+        std::chrono::time_point<Clock> finish_{};    /// Finish time_point. Setted in Timer::stop.
     }; // class Timer
 
 } // namespace mta
