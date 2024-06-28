@@ -10,6 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Compiler flags
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
+# Clang tidy
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,modernize-*,clang-analyzer-,cppcoreguidelines-,bugprone-")
 # Add the main application
 add_executable(${PROJECT_NAME} src/main.cpp)
 
@@ -17,18 +20,14 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
 # Add Catch2 testing
-# Assuming Catch2 is added as a submodule or installed in the system
-# If Catch2 is a submodule in `external` directory
-# add_subdirectory(external/Catch2)
-# include_directories(external/Catch2/single_include)
+add_subdirectory(external/Catch2)
 
-# Add the test executable
-# add_executable(tests test/test_main.cpp)
-# target_link_libraries(tests Catch2::Catch2)
+# These tests can use the Catch2-provided main
+add_executable(tests test/test_timer.cpp)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
-# Include header files in tests
-# target_include_directories(tests PRIVATE include)
+enable_testing()
+add_test(NAME MyTests COMMAND tests)
 
-# Enable CTest framework
-# enable_testing()
-# add_test(NAME MyTests COMMAND tests)
+# Setting clang tidy to mta
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")

@@ -6,7 +6,7 @@
 
 using namespace std::chrono_literals;
 
-int main()
+auto main() -> int
 {
     mta::Timer timer;
     timer.start();
