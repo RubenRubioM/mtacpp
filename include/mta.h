@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
+#include <utility>
 
 namespace mta
 {
@@ -159,23 +160,26 @@ namespace mta
         /// @brief Sets the non-member function to be executed.
         /// @param f The function.
         /// @param ...args Arguments that `f` will be executed with.
-        void setFunction(Func f, auto... args) noexcept
+        template <typename... Args>
+        void setFunction(Func f, Args&&... args) noexcept
         {
-            func_ = std::bind(f, args...);
+            func_ = std::bind(f, std::forward<Args>(args)...);
         }
 
         /// @brief Sets the member function to be executed.
         /// @param f The member function.
         /// @param c The object reference to execute `f`.
         /// @param ...args Arguments that `f` will be executed with.
-        void setMemberFunction(auto f, auto c, auto... args) noexcept
+        template <typename... Args>
+        void setMemberFunction(auto f, auto c, Args&&... args) noexcept
         {
-            func_ = std::bind(f, c, args...);
+            func_ = std::bind(f, c, std::forward<Args>(args)...);
         }
 
-        auto exec(auto... args) const noexcept -> decltype(auto)
+        template <typename... Args>
+        auto exec(Args&&... args) const noexcept -> decltype(auto)
         {
-            func_(args...);
+            func_(std::forward<Args>(args)...);
         }
 
     private:
