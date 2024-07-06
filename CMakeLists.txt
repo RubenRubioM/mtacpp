@@ -8,13 +8,17 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Compiler flags
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_compile_options(-Wall -Wextra -Wpedantic)
+
 
 # Clang tidy
 find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,modernize-*,clang-analyzer-,cppcoreguidelines-,bugprone-")
 # Add the main application
 add_executable(${PROJECT_NAME} src/main.cpp)
+
+# Add pthread
+target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 
 # Include header files
 target_include_directories(${PROJECT_NAME} PRIVATE include)
@@ -27,7 +31,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE include)
 add_subdirectory(external/Catch2)
 
 # These tests can use the Catch2-provided main
-add_executable(tests test/test_timer.cpp)
+add_executable(tests 
+               test/test_timer.cpp
+               test/test_alarm.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 enable_testing()

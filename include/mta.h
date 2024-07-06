@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <chrono>
+#include <functional>
+#include <utility>
 
 namespace mta
 {
@@ -73,16 +75,15 @@ namespace mta
     /// Integer representation for `std::chrono::duration` in years.
     using IntegerYears = std::chrono::duration<integerType, std::ratio<yearsRatio>>;
 
-    /// @brief Timer class definition used to calculate the time elapsed since the start of itself.
+    /// @brief Timer class used to calculate the time elapsed since the start of itself.
     /// @tparam Clock - The type of clock used to calculate the time. Default value is `std::chrono::high_resolution_clock`.
     template <typename Clock = std::chrono::high_resolution_clock>
     class Timer
     {
     public:
-
         /// @brief Default constructor.
         constexpr explicit Timer() noexcept = default;
-        
+
         /// @brief Destructor
         ~Timer() noexcept = default;
 
@@ -93,16 +94,16 @@ namespace mta
         }
 
         /// @brief Stops the timer. Sets Timer::finish_ to Clock::now()
-        /// @note If `Timer::stop` is called without calling `Timer::start` first, the time will be 0. 
+        /// @note If `Timer::stop` is called without calling `Timer::start` first, the time will be 0.
         void stop() noexcept
         {
             finish_ = Clock::now();
-            if (init_ == std::chrono::time_point<Clock>())
+            if (init_ == std::chrono::time_point<Clock>()) [[unlikely]]
                 init_ = finish_;
         }
 
         /// @brief If the timer has been stopped
-        /// @return `true` if `Timer::stop` has been called before. 
+        /// @return `true` if `Timer::stop` has been called before.
         /// @return `false` otherwise.
         [[nodiscard]] constexpr bool isStopped() const
         {
@@ -111,7 +112,7 @@ namespace mta
 
         /// @brief Returns the elapsed time since `Timer::start` was called
         /// @tparam ConvertibleDuration `std::chrono::duration` to convert to this unit.
-        /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer. 
+        /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer.
         ///       You can also provide your own conversion directly from chrono, e.g: `std::chrono::milliseconds`.
         ///       The default value is `mta::DecimalNanoseconds`, nanoseconds in floating point representation.
         /// @return The value of T between `Timer::start` and now in the underlying type used in `ConvertibleDuration`.
@@ -123,7 +124,7 @@ namespace mta
 
         /// @brief Returns the elapsed time since `Timer::start` was called as an `std::chrono::duration`
         /// @tparam ConvertibleDuration `std::chrono::duration` to convert to this unit.
-        /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer. 
+        /// @note Encourage to use the `using` defined in the namespace `mta` that starts from Decimal and Integer.
         ///       You can also provide your own conversion directly from chrono, e.g: `std::chrono::milliseconds`.
         ///       The default value is `mta::DecimalNanoseconds`, nanoseconds in floating point representation.
         /// @return The value of T between `Timer::start` and now.
@@ -135,10 +136,75 @@ namespace mta
         }
 
     private:
-        std::chrono::time_point<Clock> init_{};     /// Initial time_point. Setted in Timer::start.
-        std::chrono::time_point<Clock> finish_{};    /// Finish time_point. Setted in Timer::stop.
+        std::chrono::time_point<Clock> init_{};   /// Initial time_point. Setted in Timer::start.
+        std::chrono::time_point<Clock> finish_{}; /// Finish time_point. Setted in Timer::stop.
     }; // class Timer
 
+    /// @brief Alarm class used to trigger a function, member function or lambda function when a criteria is met.
+    template <typename Func,
+              typename IntervalSleepType = DecimalMilliseconds>
+    class Alarm
+    {
+    public:
+        /// @brief Default constructor.
+        explicit Alarm() noexcept = default;
+
+        /// @brief Constructor with interval time.
+        /// @param time The time of the interval in std::chrono::duration.
+        explicit Alarm(const IntervalSleepType &time) : intervalTime_(time) {}
+
+        /// @brief Constructor with interval time and a non-member function to be executed with its params.
+        /// @tparam ...Args Params parameter pack
+        /// @param time The time of the interval in std::chrono::duration.
+        /// @param f The non-member function to be executed
+        /// @param ...args Arguments that `f` will be executed with.
+        template <typename... Args>
+        Alarm(const IntervalSleepType &time, Func f, Args &&...args) : intervalTime_(time), func_(std::bind(f, std::forward<Args>(args)...)) {}
+
+        /// @brief Default destructor
+        ~Alarm() noexcept = default;
+
+        /// @brief Sets the interval of time to execute the alarm.
+        /// @param time The time of the interval in std::chrono::duration.
+        void setInterval(const IntervalSleepType &time) noexcept
+        {
+            intervalTime_ = time;
+        }
+
+        /// @brief Sets the non-member function to be executed.
+        /// @param f The function.
+        /// @param ...args Arguments that `f` will be executed with.
+        template <typename... Args>
+        void setFunction(Func f, Args &&...args) noexcept
+        {
+            func_ = std::bind(f, std::forward<Args>(args)...);
+        }
+
+        /// @brief Sets the member function to be executed.
+        /// @param f The member function.
+        /// @param c The object reference to be executed as `this` with `f`.
+        /// @param ...args Arguments that `f` will be executed with.
+        template <typename... Args>
+        void setMemberFunction(auto f, auto c, Args &&...args) noexcept
+        {
+            func_ = std::bind(f, c, std::forward<Args>(args)...);
+        }
+
+        template <typename... Args>
+        auto exec(Args &&...args) const noexcept -> decltype(auto)
+        {
+            func_(std::forward<Args>(args)...);
+        }
+
+        auto exec() const noexcept -> decltype(auto)
+        {
+            func_();
+        }
+
+    private:
+        IntervalSleepType intervalTime_{}; /// Time to execute the alarm.
+        std::function<Func> func_{};       /// Function to be executed when `intervalTime_` is finished.
+    }; // class Alarm
 } // namespace mta
 
 #endif

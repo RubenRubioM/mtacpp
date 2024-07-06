@@ -39,7 +39,6 @@ TEST_CASE("mta::Timer is instantiated with different clocks", "[mta::Timer]")
     [[maybe_unused]] mta::Timer<std::chrono::high_resolution_clock> highResolutionClockTimer{};
 }
 
-//TODO: Test elapsedAsDuration aswell
 TEST_CASE("mta::Timer with elapsed and elapsedAsDuration with different units", "[mta::Timer]")
 {
     constexpr uint64_t sleepTimeInMs = 100;
