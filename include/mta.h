@@ -141,13 +141,27 @@ namespace mta
     }; // class Timer
 
     /// @brief Alarm class used to trigger a function, member function or lambda function when a criteria is met.
-    /// todo: add more information when the class is finished.
     template <typename Func,
               typename IntervalSleepType = DecimalMilliseconds>
     class Alarm
     {
     public:
+        /// @brief Default constructor.
         explicit Alarm() noexcept = default;
+
+        /// @brief Constructor with interval time.
+        /// @param time The time of the interval in std::chrono::duration.
+        explicit Alarm(const IntervalSleepType &time) : intervalTime_(time) {}
+
+        /// @brief Constructor with interval time and a non-member function to be executed with its params.
+        /// @tparam ...Args Params parameter pack
+        /// @param time The time of the interval in std::chrono::duration.
+        /// @param f The non-member function to be executed
+        /// @param ...args Arguments that `f` will be executed with.
+        template <typename... Args>
+        Alarm(const IntervalSleepType &time, Func f, Args &&...args) : intervalTime_(time), func_(std::bind(f, std::forward<Args>(args)...)) {}
+
+        /// @brief Default destructor
         ~Alarm() noexcept = default;
 
         /// @brief Sets the interval of time to execute the alarm.
@@ -161,25 +175,30 @@ namespace mta
         /// @param f The function.
         /// @param ...args Arguments that `f` will be executed with.
         template <typename... Args>
-        void setFunction(Func f, Args&&... args) noexcept
+        void setFunction(Func f, Args &&...args) noexcept
         {
             func_ = std::bind(f, std::forward<Args>(args)...);
         }
 
         /// @brief Sets the member function to be executed.
         /// @param f The member function.
-        /// @param c The object reference to execute `f`.
+        /// @param c The object reference to be executed as `this` with `f`.
         /// @param ...args Arguments that `f` will be executed with.
         template <typename... Args>
-        void setMemberFunction(auto f, auto c, Args&&... args) noexcept
+        void setMemberFunction(auto f, auto c, Args &&...args) noexcept
         {
             func_ = std::bind(f, c, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
-        auto exec(Args&&... args) const noexcept -> decltype(auto)
+        auto exec(Args &&...args) const noexcept -> decltype(auto)
         {
             func_(std::forward<Args>(args)...);
+        }
+
+        auto exec() const noexcept -> decltype(auto)
+        {
+            func_();
         }
 
     private:

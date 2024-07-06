@@ -31,7 +31,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE include)
 add_subdirectory(external/Catch2)
 
 # These tests can use the Catch2-provided main
-add_executable(tests test/test_timer.cpp)
+add_executable(tests 
+               test/test_timer.cpp
+               test/test_alarm.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 enable_testing()
